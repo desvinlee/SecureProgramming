@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HOME</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class = "box">
+    <div class="order-form">
+      <h2 id="msg" >Welcome</h2>
+    </div>
+  
+    <div class="order-form">
+      <h3 id="msg">to UTM Bookshop</h3>
+    </div>
+
+    <br><h3>Please please your order</h3>
+    <div class="payment-form">
+        <!--<form action="xxx" method="POST">
+
+            <div class="form-group">
+                <label for="quantity">Quantity: </label>
+                <input type="number" id="cvv" name="cvv" required>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount: </label>
+                <input type="number" id="amount" name="amount" required>
+            </div>
+        </form>-->
+
+        <label for="bookQuantity">Select the number of books:</label>
+    <select id="bookQuantity" onchange="calculateTotal()">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+
+    </select>
+    
+    <div class="result" id="totalPrice">Total Price: RM 3.50</div>
+        <br><a href="payment.html" ><button type = "button">Place Order</a>
+    </div>
+      
+
+
+      <br><br>
+      <p>Click here to go back Login Page</p>
+      <a href="login.html"><button type="button" >Sign Up</button></a>
+  </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script>
+
+  function calculateTotal() {
+            var pricePerBook = 3.5;
+            var quantity = document.getElementById("bookQuantity").value;
+            var totalPrice = pricePerBook * quantity;
+            document.getElementById("totalPrice").innerText = "Total Price: RM " + totalPrice.toFixed(2);
+        } </script>
+
+  <script>
+    let UserCreds = JSON.parse(sessionStorage.getItem("user-creds"));
+    let UserInfo = JSON.parse(sessionStorage.getItem("user-info"));
+
+    let MsgHead = document.getElementById('msg');
+    let Greethead = document.getElementById('greet');
+    let SignoutBtn = document.getElementById('signoutbutton');
+
+    MsgHead.innerText = `user with email "${UserCreds.email}" logged in`;
+    GreetHead.innerText = `welcome ${UserInfo.username}!`;
+
+    let Signout = () => {
+      sessionStorage.removeItem("user-creds");
+      sessionStorage.removeItem("user-info");
+      window.location.href = 'login.html'
+    }
+
+    let CheckCred = () => {
+      if (!sessionStorage.getItem("user-creds"))
+        window.location.href = 'login.html'
+
+      else {
+        MsgHead.innerText = `User with email "${UserCreds.email}" logged in`;
+        GreetHead.innerText = `welcome ${UserInfo.username}!`;
+      }
+    }
+
+    window.addEventListener('load', CheckCred);
+    SignoutBtn.addEventListener('click', Signout);
+  </script>
+</body>
+
+
+</html>

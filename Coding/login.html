@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Login Auth with Firebase</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <form id="MainForm">
+        <h1 class="reg">Login User</h1>
+
+        <div clas="box">
+            <div class="form-floating">
+                <input type="email" class="form-control" id="emailInp" placeholder="name@example.com">
+                <label for="floatingInput">Email address</label>
+            </div>
+    
+            <div class="form-floating">
+                <input type="password" class="form-control" id="passwordInp" placeholder="Password">
+                <label id="togglePassword" style="cursor: pointer;">Password</label>
+            </div>
+    
+            <label id="forgotpassword" style="cursor: pointer; margin-left: 10px;">Forget Password?</label>
+            
+            <div class="form-floating">
+                <button type="submit" class="form-floating">Login </button>
+            </div>
+    
+            <div class="form-floating">
+                <a href="register.html"><button type="button" class="form-floating">Sign Up</button></a>
+            </div>
+        </div>
+
+    </form>
+
+
+    <script type="module">
+
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBNup7rNvBt1GjFNeal7_9n-4NRMATSfo",
+            authDomain: "programming-assignment1-cd553.firebaseapp.com",
+            databaseURL: "https://programming-assignment1-cd553-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "programming-assignment1-cd553",
+            storageBucket: "programming-assignment1-cd553.appspot.com",
+            messagingSenderId: "707327851801",
+            appId: "1:707327851801:web:04d8d3d288f1f4e1e9d988"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        //get ref to database services
+        const db = getDatabase();
+
+        //authentication
+        const auth = getAuth(app);
+        const dbref = ref(db);
+
+        let EmailInp = document.getElementById('emailInp');
+        let PassInp = document.getElementById('passwordInp');
+        let MainForm = document.getElementById('MainForm');
+        let ForgotPassword = document.getElementById('forgotpassword');
+        let TogglePassword = document.getElementById('togglePassword');
+
+        let SignInUser = evt => {
+            evt.preventDefault();
+
+            signInWithEmailAndPassword(auth, EmailInp.value, PassInp.value)
+                .then((credentials) => {
+                    get(child(dbref, 'UserAuthList/' + credentials.user.uid)).then((snapshot)=>{
+                        if(snapshot.exists){
+                            sessionStorage.setItem("user-info", JSON.stringify({
+                                username: snapshot.val().username
+                            }))
+                            sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                            window.location.href = 'home.html';
+                        }
+                        alert("Login Successfull! ")
+
+                    })
+                   
+                })
+
+                .catch((error) => {
+                    alert("Wrong Password!");
+                    console.log(error.code);
+                    console.log(error.message);
+                })
+        }
+        let Forgotpassword = ()=>{
+            sendPasswordResetEmail(auth, EmailInp.value)
+            .then(()=> {
+                alert("A Password Reset Link has been sent to your email");
+
+            })
+            .catch((error)=> {
+                alert("please insert a valid email");
+                console.log(error.code);
+                console.log(erorr.message);
+            })
+            
+        }
+
+        MainForm.addEventListener('submit', SignInUser);
+        ForgotPassword.addEventListener('click', Forgotpassword);
+
+    </script>
+</body>
+
+</html>
